@@ -101,6 +101,7 @@ class Alpha(LIF):
         reset_mechanism="zero",
         state_quant=False,
         output=False,
+        log_spikes=False,
     ):
         super().__init__(
             beta,
@@ -114,6 +115,7 @@ class Alpha(LIF):
             reset_mechanism,
             state_quant,
             output,
+            log_spikes=log_spikes
         )
 
         self._alpha_register_buffer(alpha, learn_alpha)

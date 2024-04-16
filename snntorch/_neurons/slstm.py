@@ -171,6 +171,7 @@ class SLSTM(SpikingNeuron):
         reset_mechanism="none",
         state_quant=False,
         output=False,
+        log_spikes=False,
     ):
 
         super().__init__(
@@ -183,6 +184,7 @@ class SLSTM(SpikingNeuron):
             reset_mechanism,
             state_quant,
             output,
+            log_spikes=log_spikes
         )
 
         self._init_mem()

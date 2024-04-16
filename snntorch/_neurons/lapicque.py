@@ -199,6 +199,7 @@ class Lapicque(LIF):
         reset_mechanism="subtract",
         state_quant=False,
         output=False,
+        log_spikes=False
     ):
         super().__init__(
             beta,
@@ -212,6 +213,7 @@ class Lapicque(LIF):
             reset_mechanism,
             state_quant,
             output,
+            log_spikes=log_spikes
         )
 
         self._lapicque_cases(time_step, beta, R, C)

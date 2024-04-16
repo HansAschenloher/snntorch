@@ -30,7 +30,6 @@ class Izhikevich(LIF):
                  use_psp=True,
                  alpha=0.9,
                  beta=0.8,
-                 log_spikes=False,
                  spike_grad=None,
                  surrogate_disable=False,
                  init_hidden=False,
@@ -41,6 +40,7 @@ class Izhikevich(LIF):
                  output=False,
                  graded_spikes_factor=1.0,
                  learn_graded_spikes_factor=False,
+                 log_spikes=False,
                  ):
         super().__init__(
             0.85,
@@ -55,14 +55,12 @@ class Izhikevich(LIF):
             output=output,
             graded_spikes_factor=graded_spikes_factor,
             learn_graded_spikes_factor=learn_graded_spikes_factor,
+            log_spikes=log_spikes
         )
 
         self._register_buffer(a, b, c, d, learn_abcd, initial_u, initial_v, num_neurons)
         self.register_buffer("time_resolution", torch.Tensor([time_resolution]))
         self.use_psp = use_psp
-        self.log_spikes = log_spikes
-        if(self.log_spikes):
-            self.spike_log = []
 
         self.register_buffer("alpha", torch.as_tensor(alpha))
         self.register_buffer("beta", torch.as_tensor(beta))
@@ -143,9 +141,6 @@ class Izhikevich(LIF):
                 spk = self.fire(self.v)
             else:
                 spk += self.fire(self.v)
-
-        if(self.log_spikes):
-            self.spike_log.append(spk)
 
         if (self.init_hidden):
             if (self.output):

@@ -224,6 +224,7 @@ class SConv2dLSTM(SpikingNeuron):
         reset_mechanism="none",
         state_quant=False,
         output=False,
+        log_spikes=False
     ):
 
         super().__init__(
@@ -236,6 +237,7 @@ class SConv2dLSTM(SpikingNeuron):
             reset_mechanism,
             state_quant,
             output,
+            log_spikes=log_spikes
         )
 
         self._init_mem()
@@ -298,7 +300,7 @@ class SConv2dLSTM(SpikingNeuron):
             raise TypeError(
                 "`mem` or `syn` should not be passed as an argument while `init_hidden=True`"
             )
-        
+
         size = input_.size()
         correct_shape = (size[0], self.out_channels, size[2], size[3])
         if not self.syn.shape == correct_shape:

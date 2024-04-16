@@ -41,6 +41,7 @@ class SpikingNeuron(nn.Module):
         output=False,
         graded_spikes_factor=1.0,
         learn_graded_spikes_factor=False,
+        log_spikes=False,
     ):
         super().__init__()
 
@@ -69,6 +70,8 @@ class SpikingNeuron(nn.Module):
         self._reset_mechanism = reset_mechanism
 
         self.state_quant = state_quant
+        self.log_spikes = log_spikes
+        self.spike_log = []
 
     def fire(self, mem):
         """Generates spike if mem > threshold.
@@ -82,6 +85,8 @@ class SpikingNeuron(nn.Module):
 
         spk = spk * self.graded_spikes_factor
 
+        if(self.log_spikes):
+            self.spike_log.append(spk)
         return spk
 
     def fire_inhibition(self, batch_size, mem):
@@ -97,6 +102,8 @@ class SpikingNeuron(nn.Module):
         spk = spk_tmp * mask_spk1
         # reset = spk.clone().detach()
 
+        if(self.log_spikes):
+            self.spike_log.append(spk)
         return spk
 
     def mem_reset(self, mem):
@@ -250,6 +257,7 @@ class LIF(SpikingNeuron):
         output=False,
         graded_spikes_factor=1.0,
         learn_graded_spikes_factor=False,
+        log_spikes=False,
     ):
         super().__init__(
             threshold,
@@ -263,6 +271,7 @@ class LIF(SpikingNeuron):
             output,
             graded_spikes_factor,
             learn_graded_spikes_factor,
+            log_spikes=log_spikes
         )
 
         self._lif_register_buffer(

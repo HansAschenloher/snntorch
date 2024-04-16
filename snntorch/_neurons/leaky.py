@@ -153,6 +153,7 @@ class Leaky(LIF):
         graded_spikes_factor=1.0,
         learn_graded_spikes_factor=False,
         reset_delay=True,
+        log_spikes=False,
     ):
         super().__init__(
             beta,
@@ -168,6 +169,7 @@ class Leaky(LIF):
             output,
             graded_spikes_factor,
             learn_graded_spikes_factor,
+            log_spikes=log_spikes
         )
 
         self._init_mem()

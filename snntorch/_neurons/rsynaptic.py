@@ -255,6 +255,7 @@ class RSynaptic(LIF):
         state_quant=False,
         output=False,
         reset_delay=True,
+        log_spikes=False
     ):
         super().__init__(
             beta,
@@ -268,6 +269,7 @@ class RSynaptic(LIF):
             reset_mechanism,
             state_quant,
             output,
+            log_spikes=log_spikes
         )
 
         self.all_to_all = all_to_all

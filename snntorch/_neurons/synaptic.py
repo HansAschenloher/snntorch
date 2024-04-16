@@ -169,6 +169,7 @@ class Synaptic(LIF):
         state_quant=False,
         output=False,
         reset_delay=True,
+        log_spikes=False
     ):
         super().__init__(
             beta,
@@ -182,6 +183,7 @@ class Synaptic(LIF):
             reset_mechanism,
             state_quant,
             output,
+            log_spikes=log_spikes
         )
 
         self._alpha_register_buffer(alpha, learn_alpha)
