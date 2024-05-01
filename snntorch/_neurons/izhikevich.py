@@ -6,6 +6,10 @@ from typing import Union
 
 
 class Izhikevich(LIF):
+    """
+    This class is a implementation of the Izhikevich model for spiking neurons.
+    Some hyperparamenter presets are available under Izhikevich.cfgs
+    """
     cfgs = {
         'RS': [[0.02, 0.2, -65, 8], [-70, -14]],
         'IB': [[0.02, 0.2, -55, 4], [-70, -14]],
@@ -74,6 +78,10 @@ class Izhikevich(LIF):
         return self.v, self.u, self.syn_exc, self.syn_inh
 
     def _register_buffer(self, a, b, c, d, learn_abcd, initial_u, initial_v, num_neurons):
+        """
+        This method registers the hyperparameters a,b,c,d and the state variables u and v as buffers.
+        When learn_abcd is set to True, a,b,c and will be registered as learnable parameters
+        """
         if not isinstance(a, torch.Tensor):
             a = torch.as_tensor(float(a))
         if not isinstance(b, torch.Tensor):
@@ -96,6 +104,9 @@ class Izhikevich(LIF):
         self.register_buffer("v", torch.as_tensor([initial_v] * num_neurons))
 
     def reset_mem(self):
+        """
+        This function replaces all state variables by zero tensors
+        """
         self.syn_exc = torch.zeros_like(
             self.syn_exc, device=self.syn_exc.device
         )
@@ -150,6 +161,7 @@ class Izhikevich(LIF):
             return spk, self.u, self.v, self.syn_exc, self.syn_inh
 
     def update_hidden(self, input_, u, v, syn_exc, syn_inh):
+        """Updates all tate variables according to update_state"""
         u, v, syn_exc, syn_inh = self.update_state(input_, u, v, syn_exc, syn_inh)
         u += self.reset * self.d
         v -= self.reset * (v - self.c)
@@ -157,16 +169,15 @@ class Izhikevich(LIF):
         return u, v, syn_exc, syn_inh
 
     def update_state(self, input_, u, v, syn_exc, syn_inh):
-        # return u, v, syn_exc, syn_inh
+        """Calculates the next state"""
         if (self.use_psp):
-            syn_exc = self.alpha * syn_exc + input_
-            syn_inh = self.beta * syn_inh - input_
+            syn_exc = self.alpha * syn_exc + input_/self.time_resolution
+            syn_inh = self.beta * syn_inh - input_/self.time_resolution
             dv = 0.04 * v * v + 5 * v + 140 - u + syn_exc + syn_inh
         else:
             dv = 0.04 * v * v + 5 * v + 140 - u + input_
         du = self.a * (self.b * v - u)
-        return u + du, v + dv, syn_exc, syn_inh
-        # return u + du / self.time_resolution, v + dv / self.time_resolution, syn_exc, syn_inh
+        return u + du / self.time_resolution, v + dv / self.time_resolution, syn_exc, syn_inh
 
     @classmethod
     def detach_hidden(cls):
